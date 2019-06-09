@@ -427,8 +427,8 @@ Here it is scaled up 12x
 
 ![](done-scale.png)
 
-Here it is on my display!
+Here it is on a poorly calibrated display.
 ![](done-cap.png)
 
-Here's a much cleaner image on a properly calibrated display
+Here's a much cleaner image on a properly calibrated display.
 ![](done-other.png)
