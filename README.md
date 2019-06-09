@@ -107,6 +107,7 @@ There's some caveats of course
 * Not all displays have this subpixel pattern, some might put blue before red resulting in a BGR pattern.
 * If your display is rotated (phone or tablet) this pattern will be rotated too and this font will stop working.
 * Different subpixel patterns and orientations actually require different subpixel rendering of fonts themselves.
+* This will not work on [AMOLED displays](https://en.wikipedia.org/wiki/AMOLED) since they use [pentile](https://en.wikipedia.org/wiki/PenTile_matrix_family) subpixel patterns. These displays are by far the most common displays on mobile devices too.
 
 This method of exploiting subpixels for additional rendering resolution is called [subpixel rendering](https://en.wikipedia.org/wiki/Subpixel_rendering).
 
