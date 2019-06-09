@@ -48,8 +48,8 @@ Where as doing something like this would be interleaving.
   RGB RGB RGB RGB
 ```
 
-* Note: Each cluster of characters is **exactly** one pixel
-* Note: The order I've decided to put them in is called _RGB_ order, there's other orders like _BGR_ where blue comes first. The most common order is _RGB_ however.
+* Each cluster of characters is **exactly** one pixel
+* The order I've decided to put them in is called _RGB_ order, there's other orders like _BGR_ where blue comes first. The most common order is _RGB_ however.
 
 I've taken some creative freedoms of laying out the pixels in a 2D fashion so it's more obvious how it maps, however computers don't actually have 2D memory, their memory is 1D. So the above 4x4 example would actually be:
 
@@ -107,6 +107,8 @@ There's some caveats of course
 * Different subpixel patterns and orientations actually require different subpixel rendering of fonts themselves.
 
 This method of exploiting subpixels for additional rendering resolution is called [subpixel rendering](https://en.wikipedia.org/wiki/Subpixel_rendering).
+
+For more information on subpixel font rendering, check out [this excellent resource](https://www.grc.com/ctwhat.htm).
 
 Fortunately for us, someone has already had this idea and built something called [millitext](http://www.msarnoff.org/millitext/). Their work is listed here.
 
@@ -166,9 +168,9 @@ The acute of you may have noticed something interesting about the atlas, there's
 ## Palette
 When we only have a few colors like this, it's often easier to create a palette and refer to colors in the palette instead of each pixel being the color value itself. Assuming we use the palette above, then each pixel only ever needs to be represented by a single value in the range 0-6.
 
-* 1-bit can represent 2 possible states (0, 1)
-* 2-bit can represent 4 possible states (0, 1, 2, 3)
-* 3-bit can represent 8 possible states (0, 1, 2, 3, 4, 5, 6, 7)
+* 1-bit can represent 2 possible values (0, 1)
+* 2-bit can represent 4 possible values (0, 1, 2, 3)
+* 3-bit can represent 8 possible values (0, 1, 2, 3, 4, 5, 6, 7)
 
 If we represented each pixel as a 3-bit quantity, where the value of that pixel referred to our palette, we would only need **68 bytes** to represent the entire atlas.
 
@@ -398,7 +400,7 @@ print = (t) => {
 };
 ```
 
-With that we've broken the physical limits of fonts. Here
+With that we've broken the physical limits of fonts.
 
 ```js
 const fs = require('fs');
@@ -406,7 +408,8 @@ const result = print("Breaking the physical limits of fonts");
 fs.writeFileSync(`${result.w}x${result.h}.bin`, result.data);
 ```
 
-Use some [imagemagick](https://imagemagick.org/index.php)
+Use some [imagemagick](https://imagemagick.org/index.php) to get
+a readable image in a format that you can actually preview.
 ```
 # convert -size 73x5 -depth 8 rgb:73x5.bin done.png
 ```
@@ -418,3 +421,6 @@ Here's the final result
 Here it is scaled up 12x
 
 ![](done-scale.png)
+
+Here it is on my display!
+![](done-cap.png)
