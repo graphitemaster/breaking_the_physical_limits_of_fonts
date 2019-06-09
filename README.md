@@ -348,6 +348,7 @@ const Palette = [
   [0xff, 0xff, 0x00]
 ];
 
+// at the given bit offset |offset| read a 3-bit value from the Atlas
 read = (offset) => {
   let value = 0;
   for (let i = 0; i < 3; ) {
@@ -361,19 +362,23 @@ read = (offset) => {
   return value;
 };
 
+// for a given glyph |g| unpack the palette indices for the 5 vertical pixels
 unpack = (g) => {
   return (new Uint8Array(5)).map((_, i) =>
     read(Alphabet.length*3*i + Alphabet.indexOf(g)*3));
 };
 
+// for given glyph |g| decode the 1x5 vertical RGB strip
 decode = (g) => {
-  const rgb = new Uint8Array(5*3);
+  const rgb = new Uint8Array(5*3); 
   unpack(g).forEach((value, index) =>
     rgb.set(Palette[value], index*3));
   return rgb;
 }
 ```
 
-The `decode` function here gives us our original `1x5` strip for the give glyph `g`.
+The `decode` function here gives us our original `1x5` strip for the given glyph `g`. What's most impressive is we only need **5 bytes** of memory to decode a single character into memory. Similarly, we only need **~1.875 bytes** of memory to read such a character to begin with. Giving us an average working set of **6.875 bytes**. When you include the **68 bytes** used to represent the atlas and **36 bytes** to represent the alphabet string, we're capable of drawing text with less than **128 bytes** of RAM _theoretically_.
 
-Now all that's left is to create a way to render these glyphs into a bitmap one at a time for each character with an optional scale.
+* Writing this in assembler or C would allow you to actually see these savings
+
+Now all that's left is a way to compose these vertical strips into an image for the purposes of drawing some text.
