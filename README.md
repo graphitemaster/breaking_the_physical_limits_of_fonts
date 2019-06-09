@@ -183,7 +183,7 @@ When we only have a few colors like this, it's often easier to create a palette 
 
 If we represented each pixel as a 3-bit quantity, where the value of that pixel referred to our palette, we would only need **68 bytes** to represent the entire atlas.
 
-* The data compression folks out there might point out that you can have such a thing as a "fractional bit", the perfect size we actually need here is **2.875 bits**. This is often accomplished through something called ~~[entropy coding](https://en.wikipedia.org/wiki/Entropy_encoding)~~ [arithmetic coding](https://en.wikipedia.org/wiki/Arithmetic_coding). However, if you look at the actual atlas, entropy coding won't actually work because there is no group of pixels that share a common bit pattern here.
+* The data compression folks out there might point out that you can have such a thing as a "fractional bit", the perfect size we actually need here is **2.875 bits**. This is often accomplished through something called ~~[entropy coding](https://en.wikipedia.org/wiki/Entropy_encoding)~~ [arithmetic coding](https://en.wikipedia.org/wiki/Arithmetic_coding). However, this is quite complicated and **68 bytes** is already incredibly small.
 
 ## Alignment
 There's an ugly problem with 3-bit encoding though. It does not divide evenly into a byte. A byte is the smallest addressable unit computers can actually deal with. Imagine we have these three pixels:
