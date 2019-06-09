@@ -81,7 +81,7 @@ Then the first byte stores the value `255`, second stores the value `80` and the
 
 You may have seen _hex_, _hexadecimal_ or [_base-16_](https://en.wikipedia.org/wiki/Hexadecimal) representations of color before. Like `#ff5064`. This is a much nicer way of thinking about color. Each two characters refer to each channel of color. In this case; _R_ is `0xff`, which is `255` in decimal. _G_ is `0x50`, which is `80` in decimal and _B_ is `0x64`, which is `100` in decimal.
 
-* Note: One nice property of hexadecimal representation is that each byte of a color is represented by two characters, that means each character expresses **exactly 4 bits**. Every 4 bits is called a [nibble](https://en.wikipedia.org/wiki/Nibble).
+* One nice property of hexadecimal representation is that each byte of a color is represented by two characters, that means each character expresses **exactly 4 bits**. Every 4 bits is called a [nibble](https://en.wikipedia.org/wiki/Nibble).
 
 
 ###  Stride
@@ -195,8 +195,8 @@ Fortunutely it's still possible to work with 3-bit quanities, it just requires k
 
 Included here is a simple class which writes 3-bit quanities into a byte array.
 
-* Note: To keep this as accessible as possible for readers, the code will be written in JS but can be extended to other languages.
-* Note: All code will assume [Little Endian](https://en.wikipedia.org/wiki/Endianness) byte order since that's the most common.
+* To keep this as accessible as possible for readers, the code will be written in JS but can be extended to other languages.
+* All code will assume [Little Endian](https://en.wikipedia.org/wiki/Endianness) byte order since that's the most common.
 
 ```js
 class BitBuffer {
