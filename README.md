@@ -3,8 +3,10 @@
 The challenge: in the fewest resources possible, render meaningful text.
 
 * How small can a font really go?
-* How many bytes of memory would you need?
+* How many bytes of memory would you need (to store it and run it?)
 * How much code would it take to express it?
+
+Lets see just how far we can take this!
 
 ## Crash course in bitmaps
 
