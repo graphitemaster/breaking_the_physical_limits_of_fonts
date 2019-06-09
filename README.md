@@ -382,3 +382,39 @@ The `decode` function here gives us our original `1x5` strip for the given glyph
 * Writing this in assembler or C would allow you to actually see these savings
 
 Now all that's left is a way to compose these vertical strips into an image for the purposes of drawing some text.
+
+```js
+print = (t) => {
+  const c = t.toUpperCase().replace(/[^\w\d ]/g, '');
+  const w = c.length * 2 - 1, h = 5, bpp = 3; // * 2 for whitespace
+  const b = new Uint8Array(w * h * bpp);
+  [...c].forEach((g, i) => {
+    if (g !== ' ') for (let y = 0; y < h; y++) {
+      // copy each 1x1 pixel row to the the bitmap
+      b.set(decode(g).slice(y * bpp, y * bpp + bpp), (y * w + i * 2) * bpp);
+    }
+  });
+  return {w: w, h: h, data: b};
+};
+```
+
+With that we've broken the physical limits of fonts. Here
+
+```js
+const fs = require('fs');
+const result = print("Breaking the physical limits of fonts");
+fs.writeFileSync(`${result.w}x${result.h}.bin`, result.data);
+```
+
+Use some [imagemagick](https://imagemagick.org/index.php)
+```
+# convert -size 73x5 -depth 8 rgb:73x5.bin done.png
+```
+
+Here's the final result
+
+![](done.png)
+
+Here it is scaled up 12x
+
+![](done-scale.png)
