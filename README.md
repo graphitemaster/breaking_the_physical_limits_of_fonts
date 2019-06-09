@@ -428,3 +428,6 @@ Here it is scaled up 12x
 
 Here it is on my display!
 ![](done-cap.png)
+
+Here's a much cleaner image on a properly calibrated display
+![](done-other.png)
