@@ -313,10 +313,11 @@ That's not a mistake. We've compressed something down to **0.45%** it's original
 
 Now lets convert the representation to a string so we can embed it into our source code. That's essentially what the `to_string` method does. It reads off the contents of each byte into a single base-16 number.
 ```
-305000000c0328d6d4b24cb46d516d4ddab669926a0ddab651db76150060009c0285e6a0752db59054655bd7b569d26a4ddba053892a003060400d232850b40a6b61ad00
+305000000c0328d6d4b24cb46d516d4ddab669926a0ddab651db76150060009c0285
+e6a0752db59054655bd7b569d26a4ddba053892a003060400d232850b40a6b61ad00
 ```
 
-However, this is still quite long to embed. Fortunutely this is because we've limited ourselfs to base-16 which has an alphabet of 16 characters. A better encoding method for this is actually [base-64](https://en.wikipedia.org/wiki/Base64), which gives us 4x more characters, so lets change `to_string` to use that.
+However, this is still quite long to embed. Fortunutely this is because we've limited ourselves to base-16 which has an alphabet of 16 characters. A better encoding method for this is actually [base-64](https://en.wikipedia.org/wiki/Base64), which gives us 4x more characters, so lets change `to_string` to use that.
 ```js
 to_string() {
   return Buffer.from(this.data).toString('base64');
@@ -328,8 +329,51 @@ Which then gives us:
 MFAAAAwDKNbUsky0bVFtTdq2aZJqDdq2Udt2FQBgAJwCheagdS21kFRlW9e1adJqTdugU4kqADBgQA0jKFC0CmthrQA=
 ```
 
-Meaning we can now embed this single string in our JS and begin rasterizing millitext.
+Meaning we can now embed this single string in our JS and begin rasterizing text.
 
 # Rasterizing text
 
-TODO
+We want to only decode one glyph at a time to reduce the memory usage, that can be done quite trivially
+
+```js
+const Alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const Atlas = Uint8Array.from(Buffer.from('MFAAAAwDKNbUsky0bVFtTdq2aZJqDdq2Udt2FQBgAJwCheagdS21kFRlW9e1adJqTdugU4kqADBgQA0jKFC0CmthrQA=', 'base64'));
+const Palette = [
+  [0xff, 0xff, 0xff],
+  [0xff, 0x00, 0x00],
+  [0x00, 0xff, 0x00],
+  [0x00, 0x00, 0xff],
+  [0x00, 0xff, 0xff],
+  [0xff, 0x00, 0xff],
+  [0xff, 0xff, 0x00]
+];
+
+read = (offset) => {
+  let value = 0;
+  for (let i = 0; i < 3; ) {
+    const bit_offset = offset & 7;
+    const read = Math.min(3 - i, 8 - bit_offset);
+    const read_bits = (Atlas[offset >> 3] >> bit_offset) & (~(0xff << read));
+    value |= read_bits << i;
+    offset += read;
+    i += read;
+  }
+  return value;
+};
+
+unpack = (g) => {
+  return (new Uint8Array(5)).map((_, i) =>
+    read(Alphabet.length*3*i + Alphabet.indexOf(g)*3));
+};
+
+decode = (g) => {
+  const rgb = new Uint8Array(5*3);
+  unpack(g).forEach((value, index) =>
+    rgb.set(Palette[value], index*3));
+  return rgb;
+}
+```
+
+The `decode` function here gives us our original `1x5` strip for the give glyph `g`.
+
+Now all that's left is to create a way to render these glyphs into a bitmap one at a time for each character with an optional scale.
