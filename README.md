@@ -18,7 +18,7 @@ Images often contain multiple _planes_. Each plane refers to one "layer" of the 
 
 * There are other color spaces than RGB. JPEGs use [YUV](https://en.wikipedia.org/wiki/YUV) for instance. We're going to focus on RGB since it's what most people are familiar with.
 
-There's two ways to represent this in memory. You can store each plane seperately, or you can interleave the planes. When the planes are interleaved, we use the term _channels_ instead. Interleaving is the most common method today.
+There's two ways to represent this in memory. You can store each plane separately, or you can interleave the planes. When the planes are interleaved, we use the term _channels_ instead. Interleaving is the most common method today.
 
 Imagine we had a 4x4 image, we could represent the three planes like this, where _R_ is red, _G_ is green and _B_ is blue, respectively.
 
@@ -137,7 +137,7 @@ That might be difficult to see, so I've scaled it up 12x
 
 ![](font-scale.png)
 
-Which works out to exactly `36x5` pixels in size. The PNG is also `4bpp`, since it also has an alpha channel, but we will be ignoring that. Assuming we store each pixel as `RGB`, we'd need exactly `36*5*3` bytes, or `540` bytes to represent this as a bitmap. That's actually surprsingly good already, since the PNG itself is actually:
+Which works out to exactly `36x5` pixels in size. The PNG is also `4bpp`, since it also has an alpha channel, but we will be ignoring that. Assuming we store each pixel as `RGB`, we'd need exactly `36*5*3` bytes, or `540` bytes to represent this as a bitmap. That's actually surprisingly good already, since the PNG itself is actually:
 ```
 # wc -c < font.png 
 15118
@@ -197,9 +197,9 @@ An easy solution to this problem would be to use a nibble per pixel, since 4 div
 * We can actually go far smaller if we exploit the fact that the top-half of some characters are the same as their bottom half (mirroring). Similarly, the use of range coding and other very specific compression techniques can probably get this down far more. We'll leave that for a later writeup.
 
 ## Bit buffer
-Fortunutely it's still possible to work with 3-bit quanities, it just requires keeping track of which bit in a byte you are at when encoding and decoding.
+Fortunately it's still possible to work with 3-bit quantities, it just requires keeping track of which bit in a byte you are at when encoding and decoding.
 
-Included here is a simple class which writes 3-bit quanities into a byte array.
+Included here is a simple class which writes 3-bit quantities into a byte array.
 
 * To keep this as accessible as possible for readers, the code will be written in JS but can be extended to other languages.
 * All code will assume [Little Endian](https://en.wikipedia.org/wiki/Endianness) byte order since that's the most common.
@@ -323,7 +323,7 @@ Now lets convert the representation to a string so we can embed it into our sour
 e6a0752db59054655bd7b569d26a4ddba053892a003060400d232850b40a6b61ad00
 ```
 
-However, this is still quite long to embed. Fortunutely this is because we've limited ourselves to base-16 which has an alphabet of 16 characters. A better encoding method for this is actually [base-64](https://en.wikipedia.org/wiki/Base64), which gives us 4x more characters, so lets change `to_string` to use that.
+However, this is still quite long to embed. Fortunately this is because we've limited ourselves to base-16 which has an alphabet of 16 characters. A better encoding method for this is actually [base-64](https://en.wikipedia.org/wiki/Base64), which gives us 4x more characters, so lets change `to_string` to use that.
 ```js
 to_string() {
   return Buffer.from(this.data).toString('base64');
