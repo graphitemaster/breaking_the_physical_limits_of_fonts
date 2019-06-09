@@ -14,7 +14,7 @@ Computers typically represent images as bitmaps. The term bitmap is not to be co
 ### Planes
 Images often contain multiple _planes_. Each plane refers to one "layer" of the image. Most images contain three planes in the [RGB color space](https://en.wikipedia.org/wiki/RGB_color_space). One for _red_, _green_ and _blue_. However images with transparency often contain another plane called _alpha_. You can think of a colored image as actually three (or four for transparency) grayscale images in one.
 
-* Note: There are other color spaces than RGB. JPEGs use [YUV](https://en.wikipedia.org/wiki/YUV) for instance. We're going to focus on RGB since it's what most people are familiar with.
+* There are other color spaces than RGB. JPEGs use [YUV](https://en.wikipedia.org/wiki/YUV) for instance. We're going to focus on RGB since it's what most people are familiar with.
 
 There's two ways to represent this in memory. You can store each plane seperately, or you can interleave the planes. When the planes are interleaved, we use the term _channels_ instead. Interleaving is the most common method today.
 
@@ -191,6 +191,8 @@ pixel A  A  A  B  B  B  C  C  C  -  -  -  -  -  -  -
 See that, the **C** pixel takes up one bit of the next byte, it's _split_ across the bytes and in fact, as we start adding more pixels, they can be split up and straddle anywhere! Here we just have 1-bit inside another byte, but in practice a pixel can end up 2-bits inside another byte, 3-bits inside another byte, etc.
 
 An easy solution to this problem would be to use a nibble per pixel, since 4 divides evenly into 8, this would keep everything _aligned_ on a byte, allowing exactly 2 pixels per byte, but it also takes our atlas up from **68 bytes** to **90 bytes**, which is **1.3x** larger.
+
+* We can actually go far smaller if we exploit the fact that the top-half of some characters are the same as their bottom half (mirroring). Similarly, the use of range coding and other very specific compression techniques can probably get this down far more. We'll leave that for a later writeup.
 
 ## Bit buffer
 Fortunutely it's still possible to work with 3-bit quanities, it just requires keeping track of which bit in a byte you are at when encoding and decoding.
