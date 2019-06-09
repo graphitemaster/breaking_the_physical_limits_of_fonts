@@ -147,14 +147,20 @@ Which works out to exactly `36x5` pixels in size. The PNG is also `4bpp`, since 
 * This command tells us how many "bytes" are in a file on a Linux PC.
 * This is 14 KiB!
 
-PNG is not well suited for storing things like this since it's already too small. In fact a [BMP](https://en.wikipedia.org/wiki/BMP_file_format) can do a much better job, look:
-
+~~PNG is not well suited for storing things like this since it's already too small. In fact a [BMP](https://en.wikipedia.org/wiki/BMP_file_format) can do a much better job, look:~~
 ```
 # wc -c < font.bmp
 858
 ```
 
-We can do much better than this though.
+* Edit: It turns out our pesky PNG file contains a ton of metadata that can be stripped making it far smaller, we also have an unnecessary alpha channel. Running the PNG through tools like [pngcrush](https://pmt.sourceforge.io/pngcrush/) and [optipng](http://optipng.sourceforge.net/) really push things to the limits.
+
+```
+# wc -c < font-crushed.png
+390
+```
+
+We can still take this further ourselves with a slightly different approach.
 
 # Compressing
 
@@ -177,7 +183,7 @@ When we only have a few colors like this, it's often easier to create a palette 
 
 If we represented each pixel as a 3-bit quantity, where the value of that pixel referred to our palette, we would only need **68 bytes** to represent the entire atlas.
 
-* The data compression folks out there might point out that you can have such a thing as a "fractional bit", the perfect size we actually need here is **2.875 bits**. This is often accomplished through something called [entropy coding](https://en.wikipedia.org/wiki/Entropy_encoding). However, if you look at the actual atlas, entropy coding won't actually work because there is no group of pixels that share a common bit pattern here.
+* The data compression folks out there might point out that you can have such a thing as a "fractional bit", the perfect size we actually need here is **2.875 bits**. This is often accomplished through something called ~~[entropy coding](https://en.wikipedia.org/wiki/Entropy_encoding)~~ [arithmetic coding](https://en.wikipedia.org/wiki/Arithmetic_coding). However, if you look at the actual atlas, entropy coding won't actually work because there is no group of pixels that share a common bit pattern here.
 
 ## Alignment
 There's an ugly problem with 3-bit encoding though. It does not divide evenly into a byte. A byte is the smallest addressable unit computers can actually deal with. Imagine we have these three pixels:
@@ -308,15 +314,17 @@ build((result) => console.log(result.to_string()));
 
 After all that work, we now have a single bit buffer containing our atlas in exactly **68 bytes**.
 
-To put that in perspective, here's the original PNG
+~~To put that in perspective, here's the original PNG~~
 ```
 # wc -c < font.png 
 15118
 ```
 
-We're **222x** smaller!
+~~We're **222x** smaller!~~
 
-That's not a mistake. We've compressed something down to **0.45%** it's original size!
+~~That's not a mistake. We've compressed something down to **0.45%** it's original size!~~
+
+* Edit: With the appropriate crushing of the original PNG. We're **~6x** smaller now.
 
 Now lets convert the representation to a string so we can embed it into our source code. That's essentially what the `to_string` method does. It reads off the contents of each byte into a single base-16 number.
 ```
